@@ -228,7 +228,9 @@ Analyze_Loop:
                      end if;
                      if Inx = Argument_Count then
                         Value_Table (Opt_Inx) := No_Value;
-                     elsif Argument (Inx+1) = Tail_Separator or Argument (Inx+1)(1) = '-' then
+                     elsif Argument (Inx+1) = Tail_Separator
+                       or (Argument (Inx+1)(1) = '-' and Argument (Inx+1)'Length /=1) -- '-' is a value here
+                     then
                         Value_Table (Opt_Inx) := No_Value;
                      else
                         Value_Table (Opt_Inx) := Inx+1;

@@ -39,6 +39,7 @@ generic
    with function ">" (Left, Right : Key_Type) return Boolean is <>;
 package Binary_Map is
    type Map is private;     -- Object semantic
+   Empty_Map : constant Map;
 
    Not_Present : exception;
 
@@ -53,9 +54,12 @@ package Binary_Map is
 
    function  Is_Present (Within : in     Map; Key : Key_Type) return Boolean;
 
+   Delete_Current : exception;
+   -- If this exception is propagated from the Action procedure during Iterate,
+   -- the corresponding node is removed from the map
    generic
       with procedure Action (Key : in Key_Type; Value : in out Value_Type);
-   procedure Iterate (On : Map);
+   procedure Iterate (On : in out Map);
 
    -- Rebalance the binary map.
    procedure Balance (The_Map : in out Map);
@@ -80,6 +84,7 @@ private
          Children : Two_Pool;
       end record;
    type Map is access Node;
+   Empty_Map : constant Map := null;
 end Binary_Map;
 
 

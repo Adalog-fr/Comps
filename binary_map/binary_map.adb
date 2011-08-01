@@ -136,8 +136,8 @@ package body Binary_Map is
    ---------
 
    procedure Add (To    : in out Map;
-                  Key   : in     Key_type;
-                  Value : in     Value_type) is
+                  Key   : in     Key_Type;
+                  Value : in     Value_Type) is
    begin
       if To = null then
          To := new Node'(Key, Value, (null, null));
@@ -185,7 +185,7 @@ package body Binary_Map is
       loop
          if Cur_Node = null then
             -- Not found
-            raise Not_present;
+            raise Not_Present;
 
          elsif Key > Cur_Node.Key then
             Slot   := After;
@@ -231,11 +231,11 @@ package body Binary_Map is
    -- Fetch --
    -----------
 
-   function Fetch (From : Map; Key : Key_type) return Value_type is
+   function Fetch (From : Map; Key : Key_Type) return Value_Type is
       Cur_Node : constant Map := Get_Node (From, Key);
    begin
       if Cur_Node = null then
-         raise Not_present;
+         raise Not_Present;
       else
          return Cur_Node.Value;
       end if;
@@ -245,7 +245,7 @@ package body Binary_Map is
    -- Fetch --
    -----------
 
-   function Fetch (From : Map; Key : Key_type; Default_Value : Value_Type) return Value_type is
+   function Fetch (From : Map; Key : Key_Type; Default_Value : Value_Type) return Value_Type is
       Cur_Node : constant Map := Get_Node (From, Key);
    begin
       if Cur_Node = null then
@@ -259,7 +259,7 @@ package body Binary_Map is
    -- Is_Present --
    ----------------
 
-   function Is_Present (Within : Map; Key : Key_type) return Boolean is
+   function Is_Present (Within : Map; Key : Key_Type) return Boolean is
    begin
       return Get_Node (Within, Key) /= null;
    end Is_present;
@@ -268,15 +268,28 @@ package body Binary_Map is
    -- Iterate --
    -------------
 
-   procedure Iterate (On : Map) is
+   procedure Iterate (On : in out Map) is
+      Delete_Node : Boolean := False;
    begin
       if On = null then
          return;
       end if;
 
       Iterate(On.Children (Before));
-      Action(On.Key, On.Value);
+      begin
+         Action(On.Key, On.Value);
+      exception
+         when Delete_Current =>
+            Delete_Node := True;
+      end;
       Iterate(On.Children (After));
+
+      -- Deleting the node *after* traversing On.Children (After)
+      -- makes sure that there is no problem with the tree being
+      -- rearranged due to delete.
+      if Delete_Node then
+         Delete (On, On.Key);
+      end if;
    end Iterate;
 
    -----------
@@ -316,7 +329,7 @@ package body Binary_Map is
 
    function Is_Empty (The_Map : in Map) return Boolean is
    begin
-      return The_Map = null;
+      return The_Map = Empty_Map;
    end Is_Empty;
 
 end Binary_Map;

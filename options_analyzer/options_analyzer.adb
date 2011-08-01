@@ -219,12 +219,12 @@ Analyze_Loop:
 
             for Arg_Inx in Positive range 2 .. The_Arg'Last loop
                Opt_Inx := Index (Binary_Options, The_Arg (Arg_Inx..Arg_Inx));
-               if Opt_Inx /= 0 then
-                  -- A binary option
-                  Presence_Table (Opt_Inx) := True;
-               else
+               if Opt_Inx = 0 then
                   Opt_Inx := Index (Valued_Options, The_Arg (Arg_Inx..Arg_Inx));
-                  if Opt_Inx /= 0 then
+                  if Opt_Inx = 0 then
+                     -- Unknown option
+                     User_Error ("Unknown option: " & The_Arg (Arg_Inx));
+                  else
                      -- A valued option
                      if Arg_Inx /= The_Arg'Last then
                         User_Error ("Valued option must appear last: " & The_Arg (Arg_Inx));
@@ -243,10 +243,10 @@ Analyze_Loop:
                         Value_Table (Opt_Inx) := Inx+1;
                         Inx := Inx+1;
                      end if;
-                  else
-                     -- Unknown option
-                     User_Error ("Unknown option: " & The_Arg (Arg_Inx));
                   end if;
+               else
+                  -- A binary option
+                  Presence_Table (Opt_Inx) := True;
                end if;
             end loop;
          else

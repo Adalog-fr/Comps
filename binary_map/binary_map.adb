@@ -79,12 +79,12 @@ package body Binary_Map is
       Temp_Count : Natural;
    begin
       Count := 1;
-      if M.Children (Before) /= null then
+      if M.Children (Before) = null then
+         First := M;
+      else
          Linearize (M.Children (Before), First, Temp_Map, Temp_Count);
          Temp_Map.Children (After) := M;
          Count          := Count + Temp_Count;
-      else
-         First := M;
       end if;
       M.Children (Before) := null;
 

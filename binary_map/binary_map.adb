@@ -294,5 +294,30 @@ package body Binary_Map is
       Free (The_Map);
    end Clear;
 
+   -------------------------------
+   -- Generic_Clear_And_Release --
+   -------------------------------
+
+   procedure Generic_Clear_And_Release (The_Map : in out Map) is
+   begin
+      if The_Map = null then
+         return;
+      end if;
+
+      Clear (The_Map.Children (Before));
+      Clear (The_Map.Children (After));
+      Release (The_Map.Value);
+      Free (The_Map);
+   end Generic_Clear_And_Release;
+
+   --------------
+   -- Is_Empty --
+   --------------
+
+   function Is_Empty (The_Map : in Map) return Boolean is
+   begin
+      return The_Map = null;
+   end Is_Empty;
+
 end Binary_Map;
 

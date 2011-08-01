@@ -63,6 +63,13 @@ package Binary_Map is
    -- Clears all elements:
    procedure Clear (The_Map : in out Map);
 
+   -- Check if there are elements:
+   function Is_Empty (The_Map : in Map) return Boolean;
+
+   generic
+      with procedure Release (Value : in out Value_Type);
+   procedure Generic_Clear_And_Release (The_Map : in out Map);
+
 private
    type Slots is (Before, After);
    type Two_Pool is array (Slots) of Map;

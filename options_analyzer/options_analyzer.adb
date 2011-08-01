@@ -123,18 +123,18 @@ package body Options_Analyzer is
       begin
          if Pos > Argument_Count then
             return "";
-         else
-            return Argument (Pos) & ' ' & Parameter_Tail (Pos+1);
          end if;
+
+         return Argument (Pos) & ' ' & Parameter_Tail (Pos + 1);
       end Parameter_Tail;
    begin
       Reraise_Occurrence (Analyze_Error);
 
       if Tail_Start = Absent or Tail_Start = No_Value then
          return Default;
-      else
-         return Parameter_Tail (Tail_Start);
       end if;
+
+      return Parameter_Tail (Tail_Start);
    end Tail_Value;
 
    ----------------
@@ -191,9 +191,9 @@ package body Options_Analyzer is
          User_Error ("Incorrect integer value for option " & Option);
    end Value;
 
-   use Ada.Strings.Fixed;
    Inx : Positive := 1;
 
+   use Ada.Strings.Fixed;
 begin
 Analyze_Loop:
    while Inx <= Argument_Count loop
@@ -236,7 +236,7 @@ Analyze_Loop:
                      elsif Argument (Inx+1)'Length = 0 then
                         -- Protection if we are launched by a tool that can set zero-length parameters
                         Value_Table (Opt_Inx) := No_Value;
-                     elsif (Argument (Inx+1)(1) = '-' and Argument (Inx+1)'Length /=1) then
+                     elsif Argument (Inx+1)(1) = '-' and Argument (Inx+1)'Length /=1 then
                        -- '-' alone is a value here
                         Value_Table (Opt_Inx) := No_Value;
                      else

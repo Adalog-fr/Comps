@@ -46,15 +46,15 @@ package Binary_Map is
    procedure Add        (To     : in out Map; Key : in Key_Type; Value : in Value_Type);
    procedure Delete     (From   : in out Map; Key : in Key_Type);
    function  Fetch      (From   : in     Map; Key : in Key_Type) return Value_Type;
+   -- Get a value from Map
    -- Raises Not_Present if Key not found
-
-   function Is_Empty (The_Map : in Map) return Boolean;
-   -- Check if there are elements
-
    function  Fetch   (From : in Map; Key : in Key_Type; Default_Value : in Value_Type)
                       return Value_Type;
    -- Get a value from Map
    -- Returns Default_Value if Key not found
+
+   function Is_Empty (The_Map : in Map) return Boolean;
+   -- Check if there are elements
 
    function  Is_Present (Within : in Map; Key : in Key_Type) return Boolean;
 

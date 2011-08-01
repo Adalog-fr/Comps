@@ -127,7 +127,8 @@ package body Options_Analyzer is
 
          return Argument (Pos) & ' ' & Parameter_Tail (Pos + 1);
       end Parameter_Tail;
-   begin
+
+   begin  -- Tail_Value
       Reraise_Occurrence (Analyze_Error);
 
       if Tail_Start = Absent or Tail_Start = No_Value then
@@ -194,7 +195,7 @@ package body Options_Analyzer is
    Inx : Positive := 1;
 
    use Ada.Strings.Fixed;
-begin
+begin -- Options_Analyzer
 Analyze_Loop:
    while Inx <= Argument_Count loop
       declare

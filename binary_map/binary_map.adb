@@ -102,7 +102,7 @@ package body Binary_Map is
    --------------
 
    procedure Rebalance (M : in out Map; Size : Natural; Rest : out Map) is
-      -- Precondition: M is a linear tree (all Left pointers are null)
+      -- Precondition: M is a linear tree (all Before pointers are null)
       -- Postcondions: M is a balanced tree containing the first Size elements
       --               Rest is the first of the remaining elements from the linear tree
       Top : Map;

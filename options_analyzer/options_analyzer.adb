@@ -214,7 +214,7 @@ Analyze_Loop:
          if The_Arg (1) = '-' and The_Arg'Length /= 1 then
             -- '-' alone is considered a parameter
 
-            for Arg_Inx in 2 .. The_Arg'Last loop
+            for Arg_Inx in Positive range 2 .. The_Arg'Last loop
                Opt_Inx := Index (Binary_Options, The_Arg (Arg_Inx..Arg_Inx));
                if Opt_Inx /= 0 then
                   -- A binary option

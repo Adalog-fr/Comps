@@ -211,7 +211,10 @@ Analyze_Loop:
             exit Analyze_Loop;
          end if;
 
-         if The_Arg (1) = '-' and The_Arg'Length /= 1 then
+         if The_Arg = "" then
+            -- Ignore zero-length parameters that can be set by tools
+            null;
+         elsif The_Arg (1) = '-' and The_Arg'Length /= 1 then
             -- '-' alone is considered a parameter
 
             for Arg_Inx in Positive range 2 .. The_Arg'Last loop
@@ -228,9 +231,13 @@ Analyze_Loop:
                      end if;
                      if Inx = Argument_Count then
                         Value_Table (Opt_Inx) := No_Value;
-                     elsif Argument (Inx+1) = Tail_Separator
-                       or (Argument (Inx+1)(1) = '-' and Argument (Inx+1)'Length /=1) -- '-' is a value here
-                     then
+                     elsif Argument (Inx+1) = Tail_Separator then
+                        Value_Table (Opt_Inx) := No_Value;
+                     elsif Argument (Inx+1)'Length = 0 then
+                        -- Protection if we are launched by a tool that can set zero-length parameters
+                        Value_Table (Opt_Inx) := No_Value;
+                     elsif (Argument (Inx+1)(1) = '-' and Argument (Inx+1)'Length /=1) then
+                       -- '-' alone is a value here
                         Value_Table (Opt_Inx) := No_Value;
                      else
                         Value_Table (Opt_Inx) := Inx+1;

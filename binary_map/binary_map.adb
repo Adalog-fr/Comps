@@ -236,9 +236,9 @@ package body Binary_Map is
    begin
       if Cur_Node = null then
          raise Not_Present;
-      else
-         return Cur_Node.Value;
       end if;
+
+      return Cur_Node.Value;
    end Fetch;
 
    -----------
@@ -250,9 +250,9 @@ package body Binary_Map is
    begin
       if Cur_Node = null then
          return Default_Value;
-      else
-         return Cur_Node.Value;
       end if;
+
+      return Cur_Node.Value;
    end Fetch;
 
    ----------------

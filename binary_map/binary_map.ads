@@ -43,16 +43,20 @@ package Binary_Map is
 
    Not_Present : exception;
 
-   procedure Add        (To     : in out Map; Key : Key_Type; Value : Value_Type);
-   procedure Delete     (From   : in out Map; Key : Key_Type);
-   function  Fetch      (From   : in     Map; Key : Key_Type) return Value_Type;
+   procedure Add        (To     : in out Map; Key : in Key_Type; Value : in Value_Type);
+   procedure Delete     (From   : in out Map; Key : in Key_Type);
+   function  Fetch      (From   : in     Map; Key : in Key_Type) return Value_Type;
    -- Raises Not_Present if Key not found
 
-   function  Fetch      (From   : in     Map; Key : Key_Type; Default_Value : Value_Type)
-                        return Value_Type;
+   function Is_Empty (The_Map : in Map) return Boolean;
+   -- Check if there are elements
+
+   function  Fetch   (From : in Map; Key : in Key_Type; Default_Value : in Value_Type)
+                      return Value_Type;
+   -- Get a value from Map
    -- Returns Default_Value if Key not found
 
-   function  Is_Present (Within : in     Map; Key : Key_Type) return Boolean;
+   function  Is_Present (Within : in Map; Key : in Key_Type) return Boolean;
 
    Delete_Current : exception;
    -- If this exception is propagated from the Action procedure during Iterate,
@@ -61,18 +65,16 @@ package Binary_Map is
       with procedure Action (Key : in Key_Type; Value : in out Value_Type);
    procedure Iterate (On : in out Map);
 
-   -- Rebalance the binary map.
    procedure Balance (The_Map : in out Map);
+   -- Rebalance the binary map.
 
-   -- Clears all elements:
    procedure Clear (The_Map : in out Map);
-
-   -- Check if there are elements:
-   function Is_Empty (The_Map : in Map) return Boolean;
+   -- Clear all elements
 
    generic
       with procedure Release (Value : in out Value_Type);
    procedure Generic_Clear_And_Release (The_Map : in out Map);
+   -- Clear all elements, calling Release on each node value
 
 private
    type Slots is (Before, After);

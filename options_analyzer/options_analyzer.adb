@@ -50,7 +50,7 @@ package body Options_Analyzer is
    -- Reraise_Occurrence (Null_Occurrence) does nothing.
    Analyze_Error : Exception_Occurrence;
 
-   Presence_Table : array (Binary_Options'Range) of Boolean := (others => False);
+   Presence_Table : array (Integer range Binary_Options'Range) of Boolean := (others => False);
 
    subtype Value_Index is Integer range -1 .. Integer'Last;
    Absent   : constant Value_Index := -1;

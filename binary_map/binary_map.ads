@@ -61,9 +61,11 @@ package Binary_Map is
    Delete_Current : exception;
    -- If this exception is propagated from the Action procedure during Iterate,
    -- the corresponding node is removed from the map
+
    generic
       with procedure Action (Key : in Key_Type; Value : in out Value_Type);
    procedure Iterate (On : in out Map);
+   -- Inner iterator
 
    procedure Balance (The_Map : in out Map);
    -- Rebalance the binary map.

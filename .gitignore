@@ -1,0 +1,12 @@
+/*
+
+!binary_map/
+!options_analyzer/
+!adalog_comps.gpr
+!.gitignore
+
+/*/*
+!/*/*.ads
+!/*/*.adb
+!/*/*.texi
+

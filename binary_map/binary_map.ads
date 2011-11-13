@@ -44,7 +44,10 @@ package Binary_Map is
    Not_Present : exception;
 
    procedure Add        (To     : in out Map; Key : in Key_Type; Value : in Value_Type);
+   -- Adds Value to map for key
+   -- If key already present, replaces the existing value
    procedure Delete     (From   : in out Map; Key : in Key_Type);
+   -- Removes Key from map
    function  Fetch      (From   : in     Map; Key : in Key_Type) return Value_Type;
    -- Get a value from Map
    -- Raises Not_Present if Key not found

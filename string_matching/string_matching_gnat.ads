@@ -31,7 +31,7 @@
 
 with  -- Gnat specific units
   -- For private part only:
-  GNAT.Regpat;
+  GNAT.Regpat;  --## rule line off WITH_CLAUSES ## no message about private with (95 compatible)
 package String_Matching_Gnat is
    pragma Elaborate_Body;
 

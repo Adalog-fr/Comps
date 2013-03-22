@@ -33,7 +33,7 @@
 ----------------------------------------------------------------------
 
 with  -- Ada
-  Ada.Finalization;
+  Ada.Finalization;  --## rule line off WITH_CLAUSES ## no message about private with (95 compatible)
 
 generic
    type Component (<>) is private;

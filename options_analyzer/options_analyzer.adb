@@ -121,11 +121,11 @@ package body Options_Analyzer is
    function Tail_Value (Default : String := "") return String is
       function Parameter_Tail (Pos : Positive) return String is
       begin
-         if Pos > Argument_Count then
-            return "";
+         if Pos = Argument_Count then
+            return Argument (Pos);
+         else
+            return Argument (Pos) & ' ' & Parameter_Tail (Pos + 1);
          end if;
-
-         return Argument (Pos) & ' ' & Parameter_Tail (Pos + 1);
       end Parameter_Tail;
 
    begin  -- Tail_Value

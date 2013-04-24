@@ -44,10 +44,11 @@ package body Options_Analyzer is
    -- If we raised Options_Error at that point, the application program would have
    -- a hard time catching the exception (since the elaboration is in a declarative part).
    -- Therefore, we catch the exception in the body, and save the occurrence in the
-   -- following variable. Each provided subprogram does a Reraise_Occurrence on it; this
-   -- way, the original error is triggered at the first call of any subprogram.
+   -- following variable. Each provided subprogram (except Option_String) does a Reraise_Occurrence
+   -- on it; this way, the original error is triggered at the first call of any subprogram.
    -- Reminder: Null_Occurrence is the default for Exception_Occurrence, and
    -- Reraise_Occurrence (Null_Occurrence) does nothing.
+
    Analyze_Error : Exception_Occurrence;
 
    Presence_Table : array (Integer range Binary_Options'Range) of Boolean := (others => False);
@@ -87,6 +88,35 @@ package body Options_Analyzer is
       -- Not a valid option character
       raise Program_Error;
    end Is_Present;
+
+   -------------------
+   -- Option_String --
+   -------------------
+
+   function Option_String (With_Command : Boolean := False) return String is
+      function Partial_String (Start_Arg : Positive) return String is
+      begin
+         if Start_Arg < Argument_Count then
+            return Argument (Start_Arg) & ' ' & Partial_String (Start_Arg + 1);
+         elsif Start_Arg = Argument_Count then
+            return Argument (Start_Arg);
+         else
+            return "";
+         end if;
+      end Partial_String;
+
+      Opts : constant String := Partial_String (1);
+   begin  -- Option_String
+      if not With_Command then
+         return Opts;
+      end if;
+
+      if Opts = "" then
+         return Command_Name;
+      else
+         return Command_Name & ' ' & Opts;
+      end if;
+   end Option_String;
 
    ---------------
    -- Parameter --

@@ -69,6 +69,10 @@ package Options_Analyzer is
    -- Returns the value of Number'th parameter
    function Parameter (Number : Positive) return String;
 
+   -- Returns the raw option string
+   -- If with_command is True, include the command name
+   function Option_String (With_Command : Boolean := False) return String;
+
    -- Exception raised by analyze when the command line
    -- is invalid.
    -- Note that an invalid use of any of the provided facilities

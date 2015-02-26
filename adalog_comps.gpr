@@ -1,9 +1,6 @@
 project Adalog_Comps is
 
-   for Source_Dirs use ("string_matching",
-                        "binary_map",
-                        "linear_queue",
-                        "options_analyzer");
+   for Source_Dirs use ("string_matching", "binary_map", "linear_queue", "options_analyzer", "string_map");
    for Object_Dir use "adalib";
 
    package Pretty_Printer is
@@ -19,16 +16,18 @@ project Adalog_Comps is
    end Binder;
 
    package Compiler is
-      for Default_Switches ("ada") use ("-O2", "-gnatf", "-gnato", "-g", "-gnat05", "-gnatwc", "-gnatwf", "-gnatwi", "-gnatwj", "-gnatwk", "-gnatwm", "-gnatwo", "-gnatwp", "-gnatwr", "-gnatwu", "-gnatwv", "-gnatwz", "-gnatyM120", "-gnatWh");
+      for Default_Switches ("ada") use ("-O2", "-gnatf", "-gnato", "-g", "-gnatwcfijkmopruvz", "-gnatyM120", "-gnatWh", "-fstack-check", "-gnat12");
    end Compiler;
 
    package Builder is
-      for Default_Switches ("ada") use ("-v", "-gnatf", "-gnatwa", "-g");
+      for Default_Switches ("ada") use ("-v", "-gnatf", "-gnatwa", "-g", "-m", "-k");
    end Builder;
 
    package Ide is
       for Default_Switches ("adacontrol") use ("-f", "C:\donnees\profess\ada\programmes\semtools\adacontrol\src\verif.aru", "@units.txt", "-o", "result.csv", "-F", "gnat_short");
    end Ide;
+
+   for Main use ("t_string_map.adb");
 
 end Adalog_Comps;
 

@@ -93,6 +93,7 @@ package body Linear_Queue is
          Free (Current.Element);
          Free (Current);
       end loop;
+      Container.Last := null;
    end Clear;
 
    -----------

@@ -137,7 +137,8 @@ package body Binary_Map is
 
    procedure Add (To    : in out Map;
                   Key   : in     Key_Type;
-                  Value : in     Value_Type) is
+                  Value : in     Value_Type)
+   is
    begin
       if To = null then
          To := new Node'(Key, Value, (null, null));
@@ -262,7 +263,7 @@ package body Binary_Map is
    function Is_Present (Within : Map; Key : Key_Type) return Boolean is
    begin
       return Get_Node (Within, Key) /= null;
-   end Is_present;
+   end Is_Present;
 
    -------------
    -- Iterate --

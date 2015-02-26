@@ -184,7 +184,8 @@ package body Options_Analyzer is
 
    function Value (Option            : Character;
                    Default           : String    := "";
-                   Explicit_Required : Boolean   := False) return String is
+                   Explicit_Required : Boolean   := False) return String
+   is
       use Ada.Strings.Fixed;
 
       Option_Str : constant String (1..1) := (1 => Option);
@@ -213,7 +214,8 @@ package body Options_Analyzer is
 
    function Value (Option            : Character;
                    Default           : Integer   := 0;
-                   Explicit_Required : Boolean   := False) return Integer is
+                   Explicit_Required : Boolean   := False) return Integer
+   is
       String_Result : constant String := Value (Option, Integer'Image (Default), Explicit_Required);
    begin
       return Integer'Value (String_Result);

@@ -1,0 +1,322 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Type"
+content="text/html; charset=iso-8859-1">
+<meta name="GENERATOR" content="Microsoft FrontPage Express 2.0">
+<title>Package Variable_Length</title>
+</head>
+
+<body bgcolor="#FFFFFF">
+
+<h1>Package Variable_Length<br>
+(Documentation)</h1>
+
+<ul>
+    <li><a href="#H1">General</a> <ul>
+            <li><a href="#H1.1">Files in this distribution:</a> </li>
+            <li><a href="#H1.2">Portability</a> </li>
+            <li><a href="#H1.3">Copyright, etc.</a> </li>
+            <li><a href="#H1.4">About Adalog</a> </li>
+        </ul>
+    </li>
+    <li><a href="#H2">What package Variable_Length does</a> <ul>
+            <li><a href="#H2.1">Package Variable_Length</a> </li>
+            <li><a href="#H2.2">Package Variable_Length.IO</a> </li>
+            <li><a href="#H2.3">Questions and answers</a> </li>
+        </ul>
+    </li>
+    <li><a href="#H3">Technical notes</a> </li>
+    <li><a href="#H4">A final note...</a> </li>
+</ul>
+
+<hr>
+
+<h2><a name="H1">General</a></h2>
+
+<h3><a name="H1.1">Files in this distribution: </a></h3>
+
+<table border="0" cellspacing="10">
+    <tr>
+        <td><code>varileng.ads</code></td>
+        <td>package Variable_Length specification</td>
+    </tr>
+    <tr>
+        <td><code>varileng.adb</code></td>
+        <td>package Variable_Length body</td>
+    </tr>
+    <tr>
+        <td><code>varlenio.ads</code></td>
+        <td>package Variable_Length.IO specification</td>
+    </tr>
+    <tr>
+        <td><code>varlenio.adb</code></td>
+        <td>package Variable_Length.IO body</td>
+    </tr>
+    <tr>
+        <td><code>varileng.htm</code></td>
+        <td>(this file) package Variable_Length documentation </td>
+    </tr>
+</table>
+
+<p>The file names match the GNAT &quot;krunching&quot; for DOS.
+If you are using GNAT on systems with long file names, use
+gnatchop to recreate the proper names. </p>
+
+<h3><a name="H1.2">Portability</a></h3>
+
+<p>Fully portable.<br>
+This package uses no compiler specific feature nor any feature
+defined in an annex. </p>
+
+<h3><a name="H1.3">Copyright, etc.</a></h3>
+
+<p>Packages Variable_Length, Variable_Length.IO and their
+documentation are (C) Copyright 1997 ADALOG. </p>
+
+<p>This software is distributed under Adalog's &quot;advertiseware&quot;
+license. The goal of this license is to make this product widely
+available as an advertisement for Adalog activities and a
+demonstration of Adalog's know-how in Ada development, without
+imposing any constraint on the user, except that code not made by
+Adalog should not be confused with original code (we cannot
+accept responsability for <em>your</em> bugs). Therefore:</p>
+
+<p>Rights to use, distribute or modify in any way this software
+and its documentation are hereby granted, provided:</p>
+
+<ol>
+    <li>You do not remove or change the initial comment in the
+        source files that contains the copyright notice and the
+        reference to Adalog's activities. Similarly, you do not
+        remove this copyright notice and the reference to
+        Adalog's activities from this documentation. Additionnal
+        headers in source files, or changes to the documentation
+        are otherwise allowed. </li>
+    <li>You distribute this documentation with any copy of the
+        software (whether as source or compiled form).</li>
+    <li>If you make modifications to the software or this
+        documentation, these modifications must be properly
+        identified as additions or modifications not originating
+        from Adalog. If you make a valuable addition, we would
+        appreciate (but do not require) to be kept informed by
+        sending a message to <a
+        href="mailto:rosen@adalog.fr">rosen@adalog.fr</a>.</li>
+</ol>
+
+<p>This software is distributed in the hope that it will be
+useful, but WITHOUT ANY WARRANTY; without even the implied
+warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. </p>
+
+<p>Although we do not require it, you are very welcome, if you
+find this software useful, to send us a note at <a
+href="mailto:rosen@adalog.fr">rosen@adalog.fr</a>.
+We also welcome critics, suggestions for improvement, etc.</p>
+
+<h3><a name="H1.4">About Adalog</a></h3>
+
+<p>ADALOG is providing training, consultancy and expertise in Ada
+and related software engineering techniques. For more info about
+our services: </p>
+
+<table border="0" cellspacing="10">
+    <caption align="top"><b>ADALOG</b></caption>
+    <tr>
+        <td valign="top">19-21 rue du 8 mai 1945<br>
+        94110 ARCUEIL<br>
+        FRANCE</td>
+        <td valign="top">Tel: +33 1 41 24 31 40<br>
+        Fax: +33 1 41 24 07 36</td>
+        <td valign="top">E-m: <a
+        href="mailto:info@adalog.fr">info@adalog.fr</a>
+        <br>
+        URL: <a href="http://www.adalog.fr/">http://www.adalog.fr/adalog2.htm</a>
+        </td>
+    </tr>
+</table>
+
+<h2><a name="H2">What package Variable_Length does</a></h2>
+
+<p>This package provides a simple &quot;variable length string&quot;
+type. It is useful when you just want to store strings whose
+maximum length is known beforehand. It provides operations that
+are consistent with those defined in the <code>Bounded_String</code>
+and <code>Unbounded_String</code> packages. </p>
+
+<h3><a name="H2.1">Package Variable_Length</a></h3>
+
+<pre><b>type</b> Variable_String (Max : Positive) <b>is private</b>;</pre>
+
+<p>This is the basic type, representing a string of characters of
+maximum length <code>Max</code>. It does <i>not</i> use any
+dynamic allocation. </p>
+
+<pre><b>function</b> Length (Source : Variable_String) <b>return</b> Natural;</pre>
+
+<p>This function returns the current (actual) length of the
+string. Note that there is no need to provide a function to
+return the maximum length, since the discriminant <code>Max</code>
+is directly accessible. </p>
+
+<pre><b>procedure</b> Move 
+   (Source : <b>in</b>  Variable_String;
+    Target : <b>out</b> Variable_String;
+    Drop   : <b>in</b>  Ada.Strings.Truncation := Ada.Strings.Error);</pre>
+
+<p>This procedure copies <code>Source</code> to <code>Target</code>.
+Note that normal assignment <i>is</i> available for <code>Variable_String</code>,
+but that it will raise <code>Constraint_Error</code> if the
+discriminants of LHS and RHS do not match. This procedure allows
+to move between variables with different discriminants. If the
+current length of <code>Source</code> is bigger than the maximum
+length of <code>Target</code>, the behaviour is defined by the
+value of <code>Drop</code> (see package <code>Ada.Strings</code>
+in your favorite Reference Manual). </p>
+
+<pre><b>function</b> To_String (Source : Variable_String) <b>return</b> String;</pre>
+
+<p>This function returns the value of the actual string contained
+in <code>Source</code> as a regular <code>String</code>. </p>
+
+<pre><b>function</b> To_Variable_String 
+   (Max    : Positive;
+    Source : String := &quot;&quot;;
+    Drop   : Ada.Strings.Truncation := Ada.Strings.Error) 
+<b>return</b> Variable_String;
+
+<b>procedure</b> To_Variable_String 
+   (Source : <b>in</b>  String := &quot;&quot;; 
+    Target : <b>out</b> Variable_String;
+    Drop   : <b>in</b>  Ada.Strings.Truncation := Ada.Strings.Error);</pre>
+
+<p>These subprograms are used to convert regular strings into <code>Variable_String</code>.
+In the function, it is necessary to pass (<code>Max</code>) the
+maximum length of the created value. In the procedure, <code>Source</code>
+is copied into <code>Target</code>, and the maximum size is the
+one of <code>Target</code>. In either case, if the length of <code>Source</code>
+is bigger than the maximum length, the behaviour is defined by
+the value of <code>Drop</code> (see package <code>Ada.Strings</code>
+in your favorite Reference Manual). </p>
+
+<pre><b>function</b> &quot;&amp;&quot; (Left : Variable_String; Right : String)    <b>      return</b> Variable_String ;
+<b>function</b> &quot;&amp;&quot; (Left : Variable_String; Right : Character) <b>      return</b> Variable_String ;
+<b>function</b> &quot;&amp;&quot; (Left : Variable_String; Right : Variable_String) <b>return</b> Variable_String ;</pre>
+
+<p>These functions are used to catenate a (<code>String</code>, <code>Character</code>,
+<code>Variable_String</code>) to a <code>Variable_String</code>.
+In any case, the maximum length of the result is the one of <code>Left</code>.
+If the length of the catenation is bigger than the maximum
+length, <code>Length_Error</code> is raised. </p>
+
+<pre><b>function</b> &quot;=&quot; (Left : Variable_String; Right : Variable_String) <b> return</b> Boolean;
+<b>function</b> &quot;=&quot;  (Left : Variable_String; Right : String         ) <b>return</b> Boolean;
+<b>function</b> &quot;=&quot;  (Left : String;          Right : Variable_String) <b>return</b> Boolean;
+
+<b>function</b> &quot;&lt;&quot; (Left : Variable_String; Right : Variable_String) <strong>return</strong> Boolean;
+<b>function</b> &quot;&lt;&quot; (Left : Variable_String; Right : String )         <strong>return</strong> Boolean;
+<b>function</b> &quot;&lt;&quot; (Left : String;          Right : Variable_String)<strong> return</strong> Boolean;</pre>
+
+<p>(And similarly for <code>&quot;&lt;=&quot;, &quot;&gt;&quot;</code>,
+<code>&quot;&gt;=&quot;</code>) </p>
+
+<p>These are comparison functions between <code>Variable_String</code>
+and (<code>String</code>, <code>Character</code>, <code>Variable_String</code>).
+Of course, only the significant part of a <code>Variable_String</code>
+is compared! </p>
+
+<pre>Length_Error : <b>exception renames</b> Ada.Strings.Length_Error;</pre>
+
+<p>This is the usual renaming of exception, as provided by other
+packages. </p>
+
+<h3><a name="H2.2">Package Variable_Length.IO</a></h3>
+
+<pre><b>procedure</b> Get_Line (File : <b>in</b> File_Type; Item : out Variable_String);
+<b>procedure</b> Get_Line (Item : <b>out</b> Variable_String);</pre>
+
+<p>These procedures behave as the regular <code>Get_Line</code>
+from <code>Ada.Text_IO</code>, the main difference being that
+there is no <code>Last</code> parameter; rather, the actual
+length of the <code>Variable_String</code> tells how many
+characters were read. </p>
+
+<pre><b>procedure</b> Put_Line (File : <b>in</b> File_Type; Item : <b>in</b> Variable_String);
+<b>procedure</b> Put_Line (Item : <b>in</b> Variable_String);</pre>
+
+<p>These procedures behave as the regular <code>Put_Line</code>
+from <code>Ada.Text_IO</code>. </p>
+
+<pre><b>procedure</b> Put (File : <b>in</b> File_Type; Item : <b>in</b> Variable_String);
+<b>procedure</b> Put (Item : <b>in</b> Variable_String);</pre>
+
+<p>These procedures behave as the regular <code>Put</code> from <code>Ada.Text_IO</code>.
+</p>
+
+<h3><a name="H2.3">Questions and answers</a></h3>
+
+<p><b>Q:</b> Why use <code>Variable_String</code> rather than <code>String</code>,
+<code>Bounded_String</code>, or <code>Unbounded_String</code>?<br>
+<b>A:</b> Each kind of string is appropriate to different usage.
+As a rule of thumb, here is a short summary of when to use each: </p>
+
+<ul>
+    <li><code>String</code> is convenient for fixed length
+        strings, like messages. </li>
+    <li><code>Variable_String</code> is convenient for the
+        storage of variable lengths strings, that have no
+        particular <i>semantic</i> meaning: input strings,
+        formatting, ... </li>
+    <li><code>Bounded_String</code> is convenient to implement an
+        abstract data type as a string. For example, you may have
+        a logical name like <code>Person_Name</code> that you
+        want to implement as a variable length string. The
+        maximum length results from program analysis, and it is
+        appropriate to have a separate type for each, since you
+        don't want to assign a <code>Person_Name</code> to a <code>Person_Address</code>
+        for example. </li>
+    <li><code>Unbounded_String</code> is appropriate as a huge
+        storage of characters, like in a text processing system
+        where you may want to store the whole document as a
+        single structure. </li>
+</ul>
+
+<p><b>Q:</b> Why aren't all functions of <code>Bounded_String</code>
+provided ?<br>
+<b>A:</b> The idea of <code>Variable_String</code> is mainly to
+provide storage when the length of the string is not know
+beforehand. &quot;Natural&quot; operations are provided, but we
+didn't want to overload the package with rarely used functions.
+If you need &quot;sophisticated&quot; functions, just extract the
+<code>String</code>, work on this, and if necessary convert the
+result back to <code>Variable_String</code>. Admitedly, the
+boundary between &quot;natural&quot; and &quot;sophisticated&quot;
+functions is a matter of judgement... </p>
+
+<p><b>Q:</b> Why do the &quot;&amp;&quot; functions always raise <code>Length_Error</code>?
+<br>
+<b>A:</b> Since it is an operator, there is no way to provide a
+third argument equivalent to the <code>Drop</code> parameter of
+other operations. Raising <code>Length_Error</code> seems the
+best default in this case. This is the same as the standard
+string packages. We could have provided <code>Append</code>
+functions, but see previous paragraph... </p>
+
+<h2><a name="H3">Technical notes</a></h2>
+
+<p>There is not much to say about the implementation. It uses the
+obvious discriminated type approach, and the body of the package
+should be quite straightforward to read. Note the use array
+slices where appropriate. </p>
+
+<h2><a name="H4">A final note...</a></h2>
+
+<p align="center"><em>If you found this package useful...<br>
+If you think that getting it from us saved you some time...<br>
+If it showed you some usages of Ada that you didn't think about...
+</em></p>
+
+<p><b>Maybe you should consider using </b><a
+href="http://www.adalog.fr/adalog2.htm"><b>Adalog</b></a><b>'s
+consulting and training services ! </b></p>
+</body>
+</html>

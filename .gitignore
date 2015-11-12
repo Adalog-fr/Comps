@@ -5,3 +5,5 @@ adalib/
 !/*/*.adb
 !/*/*.texi
 
+!/variable_length/*.htm
+!/variable_length/*.html

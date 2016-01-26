@@ -39,6 +39,7 @@ package Variable_Length.IO is
 
    procedure Get_Line (File : in  File_Type; Item : out Variable_String);
    procedure Get_Line (Item : out Variable_String);
+   function  Get_Line (Max : Natural := 0) return Variable_String;
 
    procedure Put_Line (File : in File_Type; Item : in Variable_String);
    procedure Put_Line (Item : in Variable_String);

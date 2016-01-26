@@ -54,6 +54,29 @@ package body Variable_Length.IO is
    end Get_Line;
 
    --------------
+   -- Get_Line --
+   --------------
+
+   function Get_Line (Max : Natural := 0) return Variable_String is
+   begin
+      if Max = 0 then
+         declare
+            Str : constant String := Get_Line;
+         begin
+            return (Str'Length, Str'Length, Str);
+         end;
+      else
+         declare
+            Str : String (1 .. Max);
+            Len : Natural;
+         begin
+            Get_Line (Str, Len);
+            return (Max, Len, Str (1..Len));
+         end;
+      end if;
+   end Get_Line;
+
+   --------------
    -- Put_Line --
    --------------
 

@@ -172,11 +172,12 @@ package body Options_Analyzer is
    -- User_Error --
    ----------------
 
+   procedure User_Error (Message : String);
+   pragma No_Return (User_Error);
    procedure User_Error (Message : String) is
    begin
       Raise_Exception (Options_Error'Identity, Message);
    end User_Error;
-   pragma No_Return (User_Error);
 
    -----------
    -- Value --

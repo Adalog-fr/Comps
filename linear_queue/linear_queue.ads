@@ -43,10 +43,12 @@ package Linear_Queue is
    type Queue is private;
    Empty_Queue : constant Queue;
 
-   procedure Append  (To       : in out Queue;  Element   : in Component);
-   procedure Append  (To       : in out Queue;  Container : in Queue);
-   procedure Prepend (To       : in out Queue;  Element   : in Component);
-   procedure Clear   (Container: in out Queue);
+   procedure Append  (To        : in out Queue; Element   : in Component);
+   procedure Append  (To        : in out Queue; Container : in Queue);
+   procedure Prepend (To        : in out Queue; Element   : in Component);
+   procedure Clear   (Container : in out Queue; Nb_Elems  : in Natural := Natural'Last);
+   -- Removes the firs Nb_Elems elements from the Queue. 0 means all elements.
+   -- Any cursor pointing into the removed elements must be reinitialized
 
 
    --
@@ -59,6 +61,7 @@ package Linear_Queue is
    function  Next        (Position  : in Cursor) return Cursor;
    function  Has_Element (Position  : in Cursor) return Boolean;
 
+   -- These subprograms raise Constraint_Error if not Has_Element (Position)
    function  Fetch       (Position  : in Cursor) return Component;
    procedure Replace     (Position  : in Cursor; Element : in Component);
 

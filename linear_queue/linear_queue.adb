@@ -85,15 +85,13 @@ package body Linear_Queue is
 
    procedure Clear (Container : in out Queue; Nb_Elems : in Natural := Natural'Last) is
       Current   : Cursor;
-      Remaining : Natural := Nb_Elems;
    begin
-      while Remaining > 0 loop
+      for Elem_Count in Natural range 1 .. Nb_Elems loop
          Current := Container.First;
          exit when not Has_Element (Current);
          Container.First := Container.First.Next;
          Free (Current.Element);
          Free (Current);
-         Remaining := Remaining -1;
       end loop;
 
       if Container.First = null then

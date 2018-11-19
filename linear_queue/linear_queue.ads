@@ -47,8 +47,8 @@ package Linear_Queue is
    procedure Append  (To        : in out Queue; Container : in Queue);
    procedure Prepend (To        : in out Queue; Element   : in Component);
    procedure Clear   (Container : in out Queue; Nb_Elems  : in Natural := Natural'Last);
-   -- Removes the firs Nb_Elems elements from the Queue. 0 means all elements.
-   -- Any cursor pointing into the removed elements must be reinitialized
+   -- Removes the first Nb_Elems elements from the Queue.
+   -- Any cursor pointing into the removed elements must be reinitialized (no tampering checks!)
 
 
    --

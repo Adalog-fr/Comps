@@ -31,7 +31,6 @@
 --  reasons why  the executable  file might be  covered by  the GNU --
 --  Public License.                                                 --
 ----------------------------------------------------------------------
-
 with -- Predefined Ada units
   Ada.Command_Line,
   Ada.Exceptions,
@@ -161,7 +160,7 @@ package body Options_Analyzer is
    begin  -- Tail_Value
       Reraise_Occurrence (Analyze_Error);
 
-      if Tail_Start = Absent or Tail_Start = No_Value then
+      if Tail_Start in Absent | No_Value then
          return Default;
       end if;
 
@@ -202,7 +201,7 @@ package body Options_Analyzer is
       Inx := Value_Table (Inx);
       if Inx = No_Value and Explicit_Required then
          User_Error ("Value required for option " & Option);
-      elsif Inx = Absent or Inx = No_Value then
+      elsif Inx in Absent | No_Value then
          return Default;
       else
          return Argument (Inx);

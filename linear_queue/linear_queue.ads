@@ -86,8 +86,8 @@ private
       end record;
 
    -- No need to initialize, pointers are initialized to null
-   procedure Adjust   (Container : in out Queue);
-   procedure Finalize (Container : in out Queue);
+   overriding procedure Adjust   (Container : in out Queue);
+   overriding procedure Finalize (Container : in out Queue);
 
    Empty_Queue : constant Queue  := (Ada.Finalization.Controlled with null, null);
 end Linear_Queue;

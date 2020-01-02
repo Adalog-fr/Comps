@@ -6,7 +6,7 @@ with    -- Application specific units
   Odbc2;
 pragma Elaborate_All (Odbc2);
 
-package body DB_Interface.Cursor is
+package body Mysql_Interface.Cursor is
    use Ada.Strings, Ada.Strings.Fixed;
    use Odbc2;
 
@@ -227,4 +227,4 @@ begin
       end if;
    end;
    Stmt.Current_Row := 1;
-end DB_Interface.Cursor;
+end Mysql_Interface.Cursor;

@@ -4,7 +4,7 @@ with  -- Standard units
 --  with  -- Application units
 --    Globals;
 
-package body DB_Interface.Variable is
+package body Mysql_Interface.Variable is
 --     use Globals;
 
    ---------
@@ -101,4 +101,4 @@ package body DB_Interface.Variable is
       return Ada.Calendar.Formatting.Value (Value (Variable)(1..19)); -- 1..19: YYYY-MM-DD hh:mm:ss
    end Value;
 
-end DB_Interface.Variable;
+end Mysql_Interface.Variable;

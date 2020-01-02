@@ -2,7 +2,7 @@ with   -- Standard Ada units
   Ada.Calendar,
   Ada.Exceptions;
 
-package body DB_Interface is
+package body Mysql_Interface is
 
    protected Sema is
       entry P;
@@ -227,4 +227,4 @@ package body DB_Interface is
    end SQL_Variable_Value;
 
 
-end DB_Interface;
+end Mysql_Interface;

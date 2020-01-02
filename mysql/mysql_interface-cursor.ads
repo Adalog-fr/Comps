@@ -3,7 +3,7 @@ with   -- Ada Standard units
 
 generic
    Query : in String;
-package DB_Interface.Cursor is
+package Mysql_Interface.Cursor is
 
    -- raised exception if next is performed and is_exhausted set to true
    End_Of_Result_Set : exception;
@@ -43,4 +43,4 @@ package DB_Interface.Cursor is
    function Get_Date    (Column : Positive) return Ada.Calendar.Time;
    function Get_Float   (Column : Positive) return Float;
 
-end DB_Interface.Cursor;
+end Mysql_Interface.Cursor;

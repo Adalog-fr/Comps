@@ -4,7 +4,7 @@ with   -- Standard Ada units
 with    -- Application specific units
   Odbc2;
 
-package DB_Interface is
+package Mysql_Interface is
 
    -- connection to the datasource
    procedure Connect (Login       : in String;
@@ -49,4 +49,4 @@ private
    procedure Initialize (Item : in out Excluder_Object);
    procedure Finalize   (Item : in out Excluder_Object);
 
-end DB_Interface;
+end Mysql_Interface;

@@ -1,7 +1,7 @@
 with -- Standard units
   Ada.Calendar;
 
-package DB_Interface.Variable is
+package Mysql_Interface.Variable is
    procedure Set   (Variable : String; To : String);
    function  Value (Variable : String) return String;
 
@@ -14,4 +14,4 @@ package DB_Interface.Variable is
    procedure Set   (Variable : String; To : Ada.Calendar.Time);
    function  Value (Variable : String) return Ada.Calendar.Time;
 
-end DB_Interface.Variable;
+end Mysql_Interface.Variable;

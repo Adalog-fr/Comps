@@ -1,4 +1,4 @@
-separate (Db_Interface)
+separate (Mysql_Interface)
 task body Watch_Dog is
    use Ada.Calendar;
 

@@ -49,6 +49,7 @@ package Linear_Queue is
    procedure Clear   (Container : in out Queue; Nb_Elems  : in Natural := Natural'Last);
    -- Removes the first Nb_Elems elements from the Queue.
    -- Any cursor pointing into the removed elements must be reinitialized (no tampering checks!)
+   function  Is_Empty (Container : in Queue) return Boolean;
 
 
    --

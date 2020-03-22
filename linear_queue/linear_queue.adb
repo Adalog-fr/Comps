@@ -79,6 +79,12 @@ package body Linear_Queue is
       end if;
    end Prepend;
 
+   --------------
+   -- Is_Empty --
+   --------------
+
+   function  Is_Empty (Container : in Queue) return Boolean is (Container = Empty_Queue);
+
    -----------
    -- Clear --
    -----------

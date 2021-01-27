@@ -1,7 +1,6 @@
 project Adalog_Comps is
 
-   for Source_Dirs use ("string_matching", "binary_map", "linear_queue", "options_analyzer", "string_map",
-                        "variable_length", "mysql", "file_iterator");
+   for Source_Dirs use ("string_matching", "binary_map", "linear_queue", "options_analyzer", "string_map", "variable_length", "mysql", "file_iterator", "tracer");
    for Object_Dir use "adalib";
    for Main use ("t_string_map.adb");
 
@@ -26,7 +25,7 @@ project Adalog_Comps is
    end Builder;
 
    package Ide is
-      for Default_Switches ("adacontrol") use ("-f", "C:\donnees\profess\ada\programmes\semtools\adacontrol\src\verif.aru", "@units.txt", "-o", "result.csv", "-F", "gnat_short");
+      for Default_Switches ("adacontrol") use ("@units.txt", "-o", "result.csv", "-F", "gnat_short", "-@", "C:/donnees/profess/ada/composants/wks/tracer/units.txt", "-f", "C:/donnees/profess/ada/regles/verif.aru");
    end Ide;
 
 end Adalog_Comps;

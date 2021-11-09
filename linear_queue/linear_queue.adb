@@ -114,6 +114,15 @@ package body Linear_Queue is
       return Container.First;
    end First;
 
+   ----------
+   -- Last --
+   ----------
+
+   function Last (Container : in Queue) return Cursor is
+   begin
+      return Container.Last;
+   end Last;
+
 
    ----------
    -- Next --

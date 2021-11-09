@@ -59,6 +59,7 @@ package Linear_Queue is
    type Cursor is private;
 
    function  First       (Container : in Queue)  return Cursor;
+   function  Last        (Container : in Queue)  return Cursor;
    function  Next        (Position  : in Cursor) return Cursor;
    function  Has_Element (Position  : in Cursor) return Boolean;
 

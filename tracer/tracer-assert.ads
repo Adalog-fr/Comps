@@ -6,10 +6,10 @@
 -- ADALOG is providing training, consultancy and expertise in Ada   --
 -- and related software engineering techniques. For more info about --
 -- our services:                                                    --
---  ADALOG                          Tel: +33 1 45 29 21 52          --
---  2 rue du Docteur Lombard        Fax: +33 1 45 29 25 00          --
+--  ADALOG                                                          --
+--  2 rue du Docteur Lombard                                        --
 --  92441 ISSY LES MOULINEAUX CEDEX E-m: info@adalog.fr             --
---  FRANCE                          URL: https://www.adalog.fr      --
+--  FRANCE                          URL: https://www.adalog.fr/     --
 --                                                                  --
 --  This  unit is  free software;  you can  redistribute  it and/or --
 --  modify  it under  terms of  the GNU  General Public  License as --

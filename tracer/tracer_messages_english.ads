@@ -6,10 +6,10 @@
 -- ADALOG is providing training, consultancy and expertise in Ada   --
 -- and related software engineering techniques. For more info about --
 -- our services:                                                    --
--- ADALOG                   Tel: +33 1 41 24 31 40                  --
--- 19-21 rue du 8 mai 1945  Fax: +33 1 41 24 07 36                  --
+-- ADALOG                                                           --
+-- 19-21 rue du 8 mai 1945                                          --
 -- 94110 ARCUEIL            E-m: info@adalog.fr                     --
--- FRANCE                   URL: http://www.adalog.fr               --
+-- FRANCE                   URL: https://www.adalog.fr/             --
 --                                                                  --
 --  This  unit is  free software;  you can  redistribute  it and/or --
 --  modify  it under  terms of  the GNU  General Public  License as --

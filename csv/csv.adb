@@ -1,15 +1,15 @@
 ----------------------------------------------------------------------
 --  CSV - Package body                                              --
---  Copyright (C) 2021 Adalog                                       --
+--  Copyright (C) 2022 Adalog                                       --
 --  Author: J-P. Rosen                                              --
 --                                                                  --
 --  ADALOG   is   providing   training,   consultancy,   expertise, --
 --  assistance and custom developments  in Ada and related software --
 --  engineering techniques.  For more info about our services:      --
---  ADALOG                          Tel: +33 1 45 29 21 52          --
---  2 rue du Docteur Lombard        Fax: +33 1 45 29 25 00          --
+--  ADALOG                                                          --
+--  2 rue du Docteur Lombard                                        --
 --  92441 ISSY LES MOULINEAUX CEDEX E-m: info@adalog.fr             --
---  FRANCE                          URL: https://www.adalog.fr      --
+--  FRANCE                          URL: https://www.adalog.fr/     --
 --                                                                  --
 --  This  unit is  free software;  you can  redistribute  it and/or --
 --  modify  it under  terms of  the GNU  General Public  License as --
@@ -44,6 +44,10 @@ package body CSV is
    function Get_Bounds (Item : String; Separator : Character := ',') return Fields_Bounds is
       In_Quotes : Boolean := False;
    begin
+      if Item = "" then
+         raise CSV_Data_Error;
+      end if;
+
       for I in Item'Range loop
          if Item(I) = '"' then
             In_Quotes := not In_Quotes;
@@ -59,8 +63,11 @@ package body CSV is
    -- Extract --
    -------------
 
-   function Extract (Item : String; Fields : Fields_Bounds; Column : Positive) return String is
+   function Extract (Item : String; Fields : Fields_Bounds; Column : Positive; Default : String := "") return String is
    begin
+      if Column > Fields'Last then
+         return Default;
+      end if;
       return Item( Fields(Column).Start .. Fields(Column).Stop );
    end Extract;
 

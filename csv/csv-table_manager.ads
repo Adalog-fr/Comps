@@ -1,15 +1,15 @@
 ----------------------------------------------------------------------
 --  CSV.Table_Manager - Package specification                       --
---  Copyright (C) 2021 Adalog                                       --
+--  Copyright (C) 2022 Adalog                                       --
 --  Author: J-P. Rosen                                              --
 --                                                                  --
 --  ADALOG   is   providing   training,   consultancy,   expertise, --
 --  assistance and custom developments  in Ada and related software --
 --  engineering techniques.  For more info about our services:      --
---  ADALOG                          Tel: +33 1 45 29 21 52          --
---  2 rue du Docteur Lombard        Fax: +33 1 45 29 25 00          --
+--  ADALOG                                                          --
+--  2 rue du Docteur Lombard                                        --
 --  92441 ISSY LES MOULINEAUX CEDEX E-m: info@adalog.fr             --
---  FRANCE                          URL: https://www.adalog.fr      --
+--  FRANCE                          URL: https://www.adalog.fr/     --
 --                                                                  --
 --  This  unit is  free software;  you can  redistribute  it and/or --
 --  modify  it under  terms of  the GNU  General Public  License as --
@@ -43,29 +43,82 @@ package Csv.Table_Manager is
 
    type Table is limited private;
    -- A Table represented as a CSV file.
-   -- First line is assumed to contain column names
+   -- The Table can be accessed only sequentially, like in Sequential_IO.
+   -- If Open With_Header => True (default), the first line is assumed to be a header containing column names
 
+
+   --
    -- Iterator
-   procedure Open  (The_Table : in out Table; On_File : in String; Separator : in Character := ',');
+   -- An open table holds a current line.
+   -- Immediately after Open, the current line is the first data line (the header if any has been skipped)
+   -- Procedure Skip is used to move to the next line in the table.
+   -- Function End_Of_Table returns True when no more data is available
+   --
+
+   procedure Open  (The_Table   : in out Table;
+                    On_File     : in String;
+                    With_Header : in Boolean   := True;
+                    Separator   : in Character := ',');
+
    procedure Close (The_Table : in out Table);
+
    procedure Skip  (The_Table : in out Table);
+   -- raises Table_End_Error if already at end
+
    function  End_Of_Table (The_Table : Table) return Boolean;
+
    function  Is_Open (The_Table : Table) return Boolean;
 
+
+   --
+   -- Information about current state
+   --
+
    function Header      (The_Table : in Table) return String;
+   -- First line in the file (the header)
+   -- Returns "" if Open With_Header => False
+
    function Source_Line (The_Table : in Table) return String;
+   -- Current line in the file
 
-   function Number_Of_Fields (The_Table : Table)                      return Positive;
+   function Number_Of_Fields (The_Table : Table) return Positive;
+   -- Number of fields in the current line.
 
+
+   --
    -- Mapping between column positions and column names
-   function Position_Of      (In_Table  : Table; Name : String)       return Natural;
-   function Name_Of          (In_Table  : Table; Position : Positive) return String;
+   --
 
-   -- Accessors (by name or position)
+   function Position_Of (In_Table  : Table; Name     : String)   return Positive;
+   -- Raises Table_Status_Error if Open With_Header => False
+   -- Raises Constraint_Error if Name not found
+
+   function Name_Of     (In_Table  : Table; Position : Positive) return String;
+   -- Returns "" if Position greater than number of names
+
+   -- Accessors (by name or position). The returned value is unquoted.
    function Item (From_Table : Table; Name     : String;   Mapping : Character_Mapping := Identity) return String;
-   function Item (From_Table : Table; Position : Positive; Mapping : Character_Mapping := Identity) return String;
+   -- Raises Table_Status_Error if Open With_Header => False
+   -- Raises Constraint_Error if Name not found
+
+   function Item (From_Table : Table;
+                  Position   : Positive;
+                  Mapping    : Character_Mapping := Identity;
+                  Default    : String            := "")
+                  return String;
+   -- Returns unquoted item at Position transformed by Mapping, Default if Position is greater than number of fields
+
+
+   --
+   -- Exceptions
+   --
 
    Table_Status_Error : exception;
+   -- Raised in situations similar to IO_Exceptions.Status_Error
+
+   Table_End_Error    : exception;
+   -- Raised when accessing fields (or source line) with End_Of_Table true.
+
 private
    type Bounds_Access is access Fields_Bounds;
    type Table is

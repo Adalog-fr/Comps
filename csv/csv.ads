@@ -1,15 +1,15 @@
 ----------------------------------------------------------------------
 --  CSV - Package specification                                     --
---  Copyright (C) 2021 Adalog                                       --
+--  Copyright (C) 2022 Adalog                                       --
 --  Author: J-P. Rosen                                              --
 --                                                                  --
 --  ADALOG   is   providing   training,   consultancy,   expertise, --
 --  assistance and custom developments  in Ada and related software --
 --  engineering techniques.  For more info about our services:      --
---  ADALOG                          Tel: +33 1 45 29 21 52          --
---  2 rue du Docteur Lombard        Fax: +33 1 45 29 25 00          --
+--  ADALOG                                                          --
+--  2 rue du Docteur Lombard                                        --
 --  92441 ISSY LES MOULINEAUX CEDEX E-m: info@adalog.fr             --
---  FRANCE                          URL: https://www.adalog.fr      --
+--  FRANCE                          URL: https://www.adalog.fr/     --
 --                                                                  --
 --  This  unit is  free software;  you can  redistribute  it and/or --
 --  modify  it under  terms of  the GNU  General Public  License as --
@@ -33,6 +33,18 @@
 ----------------------------------------------------------------------
 
 package CSV is
+
+-- A CSV (Comma Separated Values) string contains values (fields) separated by a separator
+-- (Notwithstanding the name, the separator can be other than a comma depending on locales;
+--  f.e., it is a semi-colon in French, where the comma is used as a decimal separator instead of a point).
+--
+-- Values can be quoted (") to include any character, especially commas and end of lines. A
+-- quote in a quoted value is doubled (like Ada).
+--
+-- It is common usage that the first line of a CSV file contains names for the corresponding fields.
+--
+-- Badly formed strings (empty string to Get_Bounds, odd number of quotes in quoted string) raise CSV_Data_Error
+
    type Bounds is
       record
          Start : Positive;
@@ -44,9 +56,10 @@ package CSV is
    -- Give the bounds of the various "fields" in Item.
    -- Fields are substrings, separated by (unquoted) Separator
 
-   function Extract (Item : String; Fields : Fields_Bounds; Column : Positive) return String;
+   function Extract (Item : String; Fields : Fields_Bounds; Column : Positive; Default : String := "") return String;
    -- Get the Column'th Field of Item (trusting Fields for bounds)
    -- The field is provided "as is", i.e. with quotation marks if it is quoted.
+   -- Returns Default if Column is outside Fields
 
    function Quote (Item : String) return String;
    -- Surrounds Item with " and doubles any " inside Item.
@@ -57,9 +70,10 @@ package CSV is
    -- Raises CSV_Data_Error if first character is " and last character isn't ".
 
    function Unquote (Item : String; Slice : Bounds; Size : Natural := 0) return String;
-   -- (fixed size version of previous function).
-   -- If unquoted Item is smaller than Size, extend it to Size with spaces.
-   -- If unquoted Item is longer than Size, truncate it to Size.
+   -- Return unquoted value of the slice of Item defined by Slice.
+   -- If Size is not 0, the returned value is exactly Size characters long:
+   --    If unquoted Item is smaller than Size, extend it to Size with spaces.
+   --    If unquoted Item is longer than Size, truncate it to Size.
 
    CSV_Data_Error : exception;
 

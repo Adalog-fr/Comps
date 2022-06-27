@@ -1,15 +1,15 @@
 ----------------------------------------------------------------------
 --  CSV.Table_Manager - Package body                                --
---  Copyright (C) 2021 Adalog                                       --
+--  Copyright (C) 2022 Adalog                                       --
 --  Author: J-P. Rosen                                              --
 --                                                                  --
 --  ADALOG   is   providing   training,   consultancy,   expertise, --
 --  assistance and custom developments  in Ada and related software --
 --  engineering techniques.  For more info about our services:      --
---  ADALOG                          Tel: +33 1 45 29 21 52          --
---  2 rue du Docteur Lombard        Fax: +33 1 45 29 25 00          --
+--  ADALOG                                                          --
+--  2 rue du Docteur Lombard                                        --
 --  92441 ISSY LES MOULINEAUX CEDEX E-m: info@adalog.fr             --
---  FRANCE                          URL: https://www.adalog.fr      --
+--  FRANCE                          URL: https://www.adalog.fr/     --
 --                                                                  --
 --  This  unit is  free software;  you can  redistribute  it and/or --
 --  modify  it under  terms of  the GNU  General Public  License as --
@@ -47,9 +47,10 @@ package body Csv.Table_Manager is
    -- Open --
    ----------
 
-   procedure Open (The_Table : in out Table;
-                   On_File   : in     String;
-                   Separator : in     Character := ',')
+   procedure Open (The_Table   : in out Table;
+                   On_File     : in     String;
+                   With_Header : in     Boolean   := True;
+                   Separator   : in     Character := ',')
    is
       use Ada.Characters.Handling, Ada.Text_IO, Ada.Strings.Unbounded;
    begin
@@ -60,11 +61,13 @@ package body Csv.Table_Manager is
       Open (The_Table.The_File, In_File, On_File);
       The_Table.At_End         := False;
       The_Table.Separator      := Separator;
-      The_Table.Header_Line    := To_Unbounded_String (To_Upper (Get_Line (The_Table.The_File)));
-      The_Table.Header_Bounds  := new Fields_Bounds'(Get_Bounds (To_String (The_Table.Header_Line)));
-      The_Table.Current_Bounds := new Fields_Bounds'(The_Table.Header_Bounds.all);
-      -- This will guarantee that if data lines don't have the same number of fields as the
-      -- header line, Constraint_Error will be raised
+      if With_Header then
+         The_Table.Header_Line    := To_Unbounded_String (To_Upper (Get_Line (The_Table.The_File)));
+         The_Table.Header_Bounds  := new Fields_Bounds'(Get_Bounds (To_String (The_Table.Header_Line)));
+         -- above line raises CSV_Data_Error if Header_Line = "", which is appropriate
+      else
+         The_Table.Header_Line := Null_Unbounded_String;
+      end if;
 
       Skip (The_Table);
    end Open;
@@ -95,8 +98,17 @@ package body Csv.Table_Manager is
       if not Is_Open (The_Table) then
          raise Table_Status_Error;
       end if;
+      if The_Table.At_End then
+         raise Table_End_Error;
+      end if;
 
-      The_Table.Current_Line := To_Unbounded_String (Get_Line (The_Table.The_File));
+      begin
+         The_Table.Current_Line := To_Unbounded_String (Get_Line (The_Table.The_File));
+      exception
+         when End_Error =>
+            The_Table.At_End := True;
+            return;
+      end;
 
       -- A CSV file may contain LF's, if the quote of the last field is open
       while Ada.Strings.Unbounded.Count (The_Table.Current_Line, """") rem 2 /= 0 loop
@@ -104,13 +116,13 @@ package body Csv.Table_Manager is
          Append (The_Table.Current_Line, Get_Line (The_Table.The_File));
       end loop;
 
-      The_Table.Current_Bounds.all := Get_Bounds (To_String (The_Table.Current_Line));
+      Free (The_Table.Current_Bounds);
+      The_Table.Current_Bounds := new Fields_Bounds'(Get_Bounds (To_String (The_Table.Current_Line)));
    exception
-      when Constraint_Error =>
-         Put_Line ("Line: " & To_String (The_Table.Current_Line));
-         raise CSV_Data_Error;
       when End_Error =>
+         -- End_Error while reading extra lines: there was an unclosed quoted last field
          The_Table.At_End := True;
+         raise Table_End_Error;
    end Skip;
 
    ------------------
@@ -143,6 +155,9 @@ package body Csv.Table_Manager is
    function Header (The_Table : in Table) return String is
       use Ada.Strings.Unbounded;
    begin
+      if not Is_Open (The_Table) then
+         raise Table_Status_Error;
+      end if;
       return To_String (The_Table.Header_Line);
    end Header;
 
@@ -153,6 +168,13 @@ package body Csv.Table_Manager is
    function Source_Line (The_Table : in Table) return String is
       use Ada.Strings.Unbounded;
    begin
+      if not Is_Open (The_Table) then
+         raise Table_Status_Error;
+      end if;
+      if The_Table.At_End then
+         raise Table_End_Error;
+      end if;
+
       return To_String (The_Table.Current_Line);
    end Source_Line;
 
@@ -166,20 +188,23 @@ package body Csv.Table_Manager is
          raise Table_Status_Error;
       end if;
 
-      return The_Table.Header_Bounds'Length;
+      return The_Table.Current_Bounds'Length;
    end Number_Of_Fields;
 
    -----------------
    -- Position_Of --
    -----------------
 
-   function Position_Of (In_Table : Table; Name : String) return Natural is
+   function Position_Of (In_Table : Table; Name : String) return Positive is
       use Ada.Characters.Handling, Ada.Strings.Unbounded;
 
       Upper_Name : constant String := To_Upper (Name);
       Header     : constant String := To_String (In_Table.Header_Line);
    begin
       if not Is_Open (In_Table) then
+         raise Table_Status_Error;
+      end if;
+      if In_Table.Header_Line = Null_Unbounded_String then
          raise Table_Status_Error;
       end if;
 
@@ -190,7 +215,7 @@ package body Csv.Table_Manager is
       end loop;
 
       -- Not found
-      return 0;
+      raise Constraint_Error;
    end Position_Of;
 
    -------------
@@ -203,7 +228,13 @@ package body Csv.Table_Manager is
       if not Is_Open (In_Table) then
          raise Table_Status_Error;
       end if;
+      if In_Table.Header_Line = Null_Unbounded_String then
+         raise Table_Status_Error;
+      end if;
 
+      if Position > In_Table.Header_Bounds'Length then
+         return "";
+      end if;
       return Unquote (Extract (To_String (In_Table.Header_Line), In_Table.Header_Bounds.all, Position));
    end Name_Of;
 
@@ -213,21 +244,24 @@ package body Csv.Table_Manager is
 
    function Item (From_Table : Table; Name : String; Mapping : Character_Mapping := Identity) return String is
    begin
-      if not Is_Open (From_Table) then
-         raise Table_Status_Error;
-      end if;
-
       return Item (From_Table, Position_Of (From_Table, Name), Mapping);
+      -- Position_Of raises Table_Status_Error if no header, otherwise Constraint_Error if Name not found
    end Item;
 
    ----------
    -- Item --
    ----------
 
-   function Item (From_Table : Table; Position : Positive; Mapping : Character_Mapping := Identity) return String is
+   function Item (From_Table : Table;
+                  Position   : Positive;
+                  Mapping    : Character_Mapping := Identity;
+                  Default    : String            := "")
+                  return String
+   is
       use Ada.Strings.Unbounded;
 
       function Convert (S : String) return String is
+         -- Apply mapping to string (standard provides only for single characters)
          Result : String := S;
       begin
          for C : Character of Result loop
@@ -239,10 +273,14 @@ package body Csv.Table_Manager is
       if not Is_Open (From_Table) then
          raise Table_Status_Error;
       end if;
+      if From_Table.At_End then
+         raise Table_End_Error;
+      end if;
 
       return Convert (Unquote (Extract (To_String (From_Table.Current_Line),
                                         From_Table.Current_Bounds.all,
-                                        Position)));
+                                        Position,
+                                        Default)));
    end Item;
 
 end Csv.Table_Manager;

@@ -1,0 +1,380 @@
+<html>
+
+<head>
+  <meta http-equiv="Content-Type"
+        content="text/html; charset=iso-8859-1">
+  <meta name="GENERATOR" content="Microsoft FrontPage Express 2.0">
+  <title>Package Protection</title>
+</head>
+
+<body bgcolor="#FFFFFF">
+
+  <h1>Package PROTECTION<br>
+    (Documentation)</h1>
+
+  <ul>
+    <li><a href="#H1">General</a> <ul>
+        <li><a href="#H1.1">Files in this distribution</a> </li>
+        <li><a href="#H1.2">Portability</a> </li>
+        <li><a href="#H1.3">Copyright, etc.</a> </li>
+        <li><a href="#H1.4">About Adalog</a> </li>
+      </ul>
+    </li>
+    <li><a href="#H2">What package Protection does</a> <ul>
+        <li><a href="#H2.1">The Semaphore type</a> </li>
+        <li><a href="#H2.2">The Protected_Call procedure</a> </li>
+        <li><a href="#H2.3">The Generic_Protected_Call
+            package</a> </li>
+        <li><a href="#H2.4">The
+            Generic_Limited_Protected_Call package</a> </li>
+        <li><a href="#H2.5">Questions and answers</a> </li>
+      </ul>
+    </li>
+    <li><a href="#H3">Implementation notes</a> </li>
+    <li><a href="#H4">A final note...</a> </li>
+  </ul>
+
+  <hr>
+
+  <h2><a name="H1">General</a></h2>
+
+  <h3><a name="H1.1">Files in this distribution: </a></h3>
+
+  <table border="0" cellspacing="10">
+    <tr>
+      <td><code>protection.ads</code></td>
+      <td>package <code>Protection</code> specification</td>
+    </tr>
+    <tr>
+      <td><code>protection.adb</code></td>
+      <td>package <code>Protection</code> body</td>
+    </tr>
+    <tr>
+      <td><code>protection.html</code></td>
+      <td>(this file) package <code>Protection</code>
+        documentation </td>
+    </tr>
+  </table>
+
+  <p>If you want examples of using package <code>Protection</code>,
+    you may download package <code>Tracer</code>
+    from <a href="https://www.adalog.fr/en/components.html">Adalog's
+    web site</a>.</p>
+
+  <h3><a name="H1.2">Portability</a></h3>
+
+  <p>Fully portable to any compiler.<br>
+    This package uses no compiler specific feature; it uses no
+    feature defined in special need annexes. </p>
+
+  <h3><a name="H1.3">Copyright, etc.</a></h3>
+
+  <p>Package Protection and its documentation are Copyright © 1998,
+    2000 ADALOG. </p>
+
+  <p>This software is distributed under Adalog's &quot;advertiseware&quot;
+    license. The goal of this license is to make this product widely
+    available as an advertisement for Adalog activities and a
+    demonstration of Adalog's know-how in Ada development, without
+    imposing any constraint on the user, except that code not made by
+    Adalog should not be confused with original code (we cannot
+    accept responsability for <em>your</em> bugs). Therefore:</p>
+
+  <p>Rights to use, distribute or modify in any way this software
+    and its documentation are hereby granted, provided:</p>
+
+  <ol>
+    <li>You do not remove or change the initial comment in the
+      source files that contains the copyright notice and the
+      reference to Adalog's activities. Similarly, you do not
+      remove this copyright notice and the reference to
+      Adalog's activities from this documentation. Additionnal
+      headers in source files, or changes to the documentation
+      are otherwise allowed. </li>
+    <li>You distribute this documentation with any copy of the
+      software (whether as source or compiled form).</li>
+    <li>If you make modifications to the software or this
+      documentation, these modifications must be properly identified
+      as additions or modifications not originating from Adalog. If
+      you make a valuable addition, we would appreciate (but do not
+      require) to be kept informed by sending a message
+      to <a href="mailto:rosen@adalog.fr">rosen@adalog.fr</a>.</li>
+  </ol>
+
+  <p>This software is distributed in the hope that it will be
+    useful, but WITHOUT ANY WARRANTY; without even the implied
+    warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. </p>
+
+  <p>Although we do not require it, you are very welcome, if you find
+    this software useful, to send us a note
+    at <a href="mailto:rosen@adalog.fr">rosen@adalog.fr</a>. We also
+    welcome critics, suggestions for improvement, etc.</p>
+
+  <h3><a name="H1.4">About Adalog</a></h3>
+
+  <p>ADALOG is providing training, consultancy and expertise in Ada
+    and related software engineering techniques. For more info about
+    our services: </p>
+
+  <table border="0" cellspacing="10">
+    <caption align="top"><b>ADALOG</b></caption>
+    <tr>
+      <td valign="top">2 rue du Docteur Lombard<br>
+        92130 ISSY-LES-MOULINEAUX<br>
+        FRANCE</td>
+      <td valign="top">E-m: <a href="mailto:info@adalog.fr">info@adalog.fr</a>
+        <br>
+        URL: <a href="https://www.adalog.fr/en/adalog.html">https://www.adalog.fr/en/adalog.html</a>
+      </td>
+    </tr>
+  </table>
+
+  <h2><a name="H2">What package Protection does</a></h2>
+
+  <p>This package provides two utilities that can be used
+    independently or in conjunction to provide various protection
+    paradigms. </p>
+
+  <ul>
+    <li>A somewhat evolved semaphore type, used to protect
+      ressources from concurrent accesses. </li>
+    <li>A procedure to protect a provided procedure from abortion
+      (i.e. to guarantee that the user procedure cannot be
+      aborted while activated). Protection against concurrent
+      accesses to this procedure may also optionnally be
+      granted. Variants of this procedure are provided in
+      generic packages if a parameter is to be passed to the
+      protected procedure. </li>
+  </ul>
+
+  <h3><a name="H2.1">The Semaphore type</a></h3>
+
+  <pre><b>protected type</b> Semaphore<b> is</b>
+    <b>entry</b> P;
+    <b>procedure</b> V;
+    <b>function</b> Holder <b>return</b> Ada.Task_Identification.Task_Id;
+
+    <b>entry</b> Open; 
+    --  blocking if Semaphore is closed and still held by another task.
+    <b>entry</b> Close;
+    --  blocking if Semaphore is open and still held by another task.
+    <b>private</b>
+    ...
+    <b>end</b> Semaphore;
+
+    Closed_Semaphore : <b>exception</b>;
+    Semaphore_Error  : <b>exception</b>;</pre>
+
+  <p><code>Semaphore</code> is a protected type with the usual <code>P</code>
+    and <code>V</code> procedures: if a task calls <code>P</code>,
+    then no other task can proceed through a call to <code>P</code>
+    until the first task (the one that owns the semaphore) has called
+    the <code>V</code> procedure. It is however a bit more evolved
+    than a traditionnal semaphore in several aspects:</p>
+
+  <ul>
+    <li>The task that currently owns the semaphore <i>may</i>
+      call <code>P</code> again without blocking; these calls
+      are counted, and the semaphore is released when the
+      corresponding number of <code>V</code> have been called.
+      This may simplify the writing of procedures that must be
+      protected against concurrent execution, while still
+      calling each other (a traditionnal semaphore would dead-lock
+      in this situation). </li>
+    <li>It is possible to close a semaphore (it is initally open).
+      Once closed, every task blocked on a <code>P</code>, <i>except
+        the one that currently owns the semaphore if any</i>,
+      will receive the exception <code>Closed_Semaphore</code>.
+      This is also true of any subsequent call to <code>P</code>.
+      A closed semaphore can be opened again. If the semaphore
+      is currently owned by some other task, <code>Open</code>
+      and <code>Close</code> will block until the semaphore is
+      free again. On the other hand, the task that currently
+      owns the semaphore may open or close it immediately,
+      without any effect. The owner may even continue to call <code>P</code>
+      (and of course <code>V</code>) without any problem. </li>
+  </ul>
+
+  <p>In short, the owner may decide to forbid any further access by
+    other tasks to the semaphore by closing it, but will never be
+    adversely affected by its own closing until the semaphore is
+    released.</p>
+
+  <p>The exception <code>Semaphore_Error</code> is raised when the
+    semaphore is incorrectly used, i.e. if <code>V</code> is called
+    by a task that does not currently hold the semaphore, or if <code>V</code>
+    is called when the semaphore is not busy.</p>
+
+  <h3><a name="H2.2">The Protected_Call procedure</a></h3>
+
+  <pre><b>type</b> Procedure_Access <b>is access procedure</b>;
+    <b>type</b> Semaphore_Access <b>is access all</b> Semaphore;
+    <b>procedure</b> Protected_Call (Subprogram : Procedure_Access;
+    Lock       : Semaphore_Access := <b>null</b>);</pre>
+
+  <p>This procedure is used to call a provided procedure in abort-deferred
+    mode, i.e. make sure that the given procedure cannot be aborted.
+    Full semantic of the called procedure is preserved, even if an
+    exception is raised.</p>
+
+  <p>If an access to a <code>Semaphore</code> object is given as
+    the second parameter, the whole call is protected by a <code>P</code>/<code>V</code>
+    pair, i.e. it will also be protected from concurrent access by
+    several tasks. Note that the same semaphore object can be given
+    to several <code>Protected_Call</code>, even with different
+    procedures. This allows to make sure that all the procedures are
+    executed in mutual exclusion.</p>
+
+  <h3><a name="H2.3">The Generic_Protected_Call package</a></h3>
+
+  <pre><b>generic</b>
+    <b>type</b> Parameter_Type (&lt;&gt;) <b>is private</b>;
+    <b>package</b> Generic_Protected_Call <b>is</b>
+    <b>type</b> Parametered_Procedure_Access <b>is access procedure</b> (Item : Parameter_Type);
+    <b>procedure</b> Protected_Call (Subprogram : Parametered_Procedure_Access;
+    Parameter  : Parameter_Type;
+    Lock       : Semaphore_Access := <b>null</b>);        
+    <b>private</b>
+    ...
+    <b>end</b> Generic_Protected_Call;</pre>
+
+  <p>This generic allows to provide the same functionnality as the <code>Protected_Call</code>
+    procedure described above, but when the called procedure needs
+    one argument. The formal type parameter gives the type of the
+    argument to the procedure.</p>
+
+  <p>Note that if more than one parameter is needed, you can simply
+    stuff them into a record type and pass it as a single parameter (provided
+    no parameter is unconstrained or limited). If you need a limited
+    parameter, use <code>Generic_Limited_Protected_Call</code> (described
+    next). Otherwise, we suggest that you make a specialized version
+    of <code>Protected_Call</code> that suits your needs. This should
+    be very straightforward by adapting the procedures from this
+    package.</p>
+
+  <h3><a name="H2.4">The Generic_Limited_Protected_Call package</a></h3>
+
+  <pre><b>generic</b>
+    <b>type</b> Parameter_Type (&lt;&gt;) <b>is limited private</b>;
+    <b>package</b> Generic_Limited_Protected_Call <b>is</b>
+    <b>type</b> Parametered_Procedure_Access <b>is access procedure</b> (Item : Parameter_Type);
+    <b>procedure</b> Protected_Call (Subprogram : Parametered_Procedure_Access;
+    Parameter  : <b>access</b> Parameter_Type;
+    Lock       : Semaphore_Access := <b>null</b>);        
+    <b>private</b>
+    ...
+    <b>end</b> Generic_Limited_Protected_Call;</pre>
+
+  <p>This package works exactly like the previous one, but allows
+    the parameter type to be a limited type. The price to pay is that
+    the parameter must be given to the <code>Protected_Call</code>
+    procedure as an access value, therefore needing aliasing etc.
+    Admitedly, whether you should prefer this one or the other one is
+    a matter of need for limitedness and taste...</p>
+
+  <h3><a name="H2.5">Questions and answers</a></h3>
+
+  <p><b>Q: </b>Why use <code>Protected_Call</code> rather than a
+    protected type?<br>
+    <b>A: </b>Of course, the simplest way of protecting code from
+    abortion is to put it into a protected operation. However, there
+    are a number of things (including IOs) that are not allowed in a
+    protected operation: the so-called <i>potentially blocking
+      operations</i>. On the other hand, there is no limitation to what
+    can be put in a procedure protected by <code>Protected_Call</code>.
+    Note also that it is possible to get protection against abortion
+    without serialization, which is not possible with protected
+    operations. </p>
+
+  <p><b>Q: </b>I want to pass a subprocedure of the main program to
+    <code>Protected_Call</code>, but the compiler refuses the 'Access.<br>
+    <b>A: </b>Since the type <code>Procedure_Access</code> is
+    declared in a library package, only library procedures or
+    procedures declared at the outermost level of a library package
+    can be passed to <code>Protected_Call</code>. See the rules on
+    accessibility levels. </p>
+
+  <p><b>Q: </b>Why does the compiler refuse to instantiate the
+    generic packages from within the main program?<br>
+    <b>A: </b>The generic packages use controlled types, and can
+    therefore be instantiated <i>only</i> as library packages, or
+    inside library packages. </p>
+
+  <p><b>Q: </b>Where can I find examples of uses of this package?<br>
+    <b>A: </b>Have a look at package <code>Debug</code>, also
+    available from <a href="http://www.adalog.fr/compo2">Adalog's
+      components page</a>. Actually, the need for package <code>Protection</code>
+    appeared when designing <code>Debug</code>, and we decided later
+    to make it a software component of its own. </p>
+
+  <h2><a name="H3">Implementation notes</a></h2>
+
+  <p>This section gives additionnal details about the
+    implementation technique of package <code>Protection</code>. We
+    recommend that you first have a look at the implementation of <code>Protection</code>
+    before reading this section. YOU DO NOT NEED TO UNDERSTAND (not
+    even read) THIS SECTION IN ORDER TO USE THE PACKAGE.</p>
+
+  <h3>The semaphore</h3>
+
+  <p>The semaphore is a quite straightforward protected type. The
+    only problem we encountered is that we wanted to block or not,
+    depending on the calling task; however, the <code>'Caller</code>
+    attribute cannot be used in the guard of a protected entry. We
+    solved it by having a public entry with a <code>True</code> guard
+    which checks the condition, and requeues to a private entry if
+    the condition is not met. This technique can be used each time a
+    condition is necessary, which for some reason is too complicated
+    to put as a regular guard.</p>
+
+  <h3>The Protected_Call</h3>
+
+  <p>The whole trick for making a call unabortable without
+    protected types is to issue it from a <code>Finalize</code>,
+    since finalization is an abort deferred operation (see RM 9.8(10)).
+    However, a finalizable type (and its <code>Finalize</code>) has
+    to be declared directly in a library package. How could the <code>Finalize</code>
+    be passed the pointer to the procedure to call? The trick was to
+    use an access-to-procedure discriminant in the controlled type (<code>Anti_Abort_Object</code>)
+    whose finalization performs the call. Similarly, the (possible)
+    semaphore is passed as another discriminant.</p>
+
+  <p>At this point, the functionnality could seem sufficient.
+    However, if the called procedure raised an exception, it would
+    propagate out of the <code>Finalize</code>, resulting in a
+    bounded error (extremely bounded however, since it always results
+    in the raising of <code>Program_Error</code>, RM 7.6.1(14..24)).
+    Of course, we could have required the called procedure not to
+    raise any exception, but we found that it was actually possible
+    to preserve the full semantics of the original exception. The
+    trick was to add another discriminant which is a pointer to an
+    object of type <code>Exception_Occurrence</code>. If an exception
+    is raised, it is caught in the <code>Finalize</code> (to prevent
+    propagation), but the occurrence is saved. After the
+    finalization, <code>Protected_Call</code> reraises the occurrence.
+    And if no exception occurs ? The <code>Exception_Occurrence</code>
+    object is initialized to <code>Null_Occurrence</code>, and the RM
+    explicitely states (RM 11.4.1(14) that raising a <code>Null_Occurrence</code>
+    does nothing, so it's OK.</p>
+
+  <p>The generic versions work exactly like the non-generic one,
+    with the addition of another access discriminant to pass the
+    parameter value to the called procedure. Note however that it is
+    not allowed to take directly the <code>'Access</code> of a formal
+    parameter. In the non-limited version, we copy the parameter to
+    an (aliased) local object; in the limited version, we require the
+    caller to pass directly an access value.</p>
+
+  <h2><a name="H4">A final note...</a></h2>
+
+  <p align="center"><em>If you found this package useful...<br>
+      If you think that it would have taken an awful time to write it
+      yourself...<br>
+      If it showed you some usages of Ada that you didn't think about...
+  </em></p>
+
+  <p><b>Maybe you should consider
+      using </b><a href="https://www.adalog.fr/en/adalog.html"><b>Adalog</b></a><b>'s
+      consulting and training services !</b> </p>
+</body>
+</html>

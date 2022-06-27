@@ -7,3 +7,5 @@ adalib/
 
 !/variable_length/*.htm
 !/variable_length/*.html
+!/protection/*.htm
+!/protection/*.html
